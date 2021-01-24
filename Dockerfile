@@ -17,17 +17,17 @@ RUN apt-get update && apt-get install -y \
 # basic shiny functionality
 RUN R -e "install.packages(c('shiny', 'rmarkdown'), repos='https://cloud.r-project.org/')"
 
-# install dependencies of the CLT app
+# install dependencies of the t-distribution app
 RUN R -e "install.packages('ggplot2', repos='https://cloud.r-project.org/')"
 
 # copy the app to the image
-RUN mkdir /root/clt
+RUN mkdir /root/tdistribution
 
 # our application is in the ./app directory relative to this docker file
-COPY app /root/clt
+COPY app /root/tdistribution
 
 COPY Rprofile.site /usr/lib/R/etc/
 
 EXPOSE 3838
 
-CMD ["R", "-e", "shiny::runApp('/root/clt')"]
+CMD ["R", "-e", "shiny::runApp('/root/tdistribution')"]
