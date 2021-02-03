@@ -6,13 +6,14 @@
 ## around the t-distribution
 ##
 ## @author: Craig Lazarski & Jeffery Painter
-## @modified: 2021-Jan-27
+## @modified: 2021-Jan-24
 ##
 ## ###########################################################
 
 library(shiny)
 library(ggplot2)
 library(dplyr)
+#library(tidyverse)
 
 ui <- fluidPage(
   tags$head(
@@ -56,13 +57,7 @@ ui <- fluidPage(
                    max = 50,
                    value = 10
                  ),
-                 sliderInput(
-                   "panel2_input_sd",
-                   "Population Standard Deviation",
-                   min = 1,
-                   max = 100,
-                   value = 20
-                 ),
+                 
                  sliderInput(
                    "panel2_input_alpha",
                    "Alpha",
@@ -80,6 +75,13 @@ ui <- fluidPage(
                    step = 1
                  ),
                  tableOutput(outputId = "panel2_tbl_obs"),
+                 # sliderInput(
+                 #   "panel2_input_sd",
+                 #   "Population Standard Deviation",
+                 #   min = 1,
+                 #   max = 100,
+                 #   value = 20
+                 # ),
                ),
                mainPanel(
                  plotOutput("panel2_plot"),
@@ -168,7 +170,7 @@ server <- function(input, output)
   {
     # Inputs
     my_sample_size = input$panel2_input_sample_size
-    my_sd          = input$panel2_input_sd
+    my_sd          = 50 #input$panel2_input_sd
     my_alpha       = input$panel2_input_alpha
     
     # Create a blank data frame
@@ -276,12 +278,12 @@ server <- function(input, output)
       ) +
       geom_vline(
         xintercept = qnorm(1 - mydata$alpha),
-        color = "red",
+        color = "blue",
         linetype = 'dashed'
       ) +
       geom_vline(
         xintercept = qt(1 - mydata$alpha, df = my_sample_size - 1),
-        color = "blue",
+        color = "red",
         linetype = "dashed"
       ) +
       annotate(
@@ -292,7 +294,9 @@ server <- function(input, output)
         size = 6
       ) +
       scale_y_continuous(expand = c(0, 0)) +
-      scale_x_continuous(expand = c(0, 0))
+      scale_x_continuous(expand = c(0, 0)) +
+      annotate("text", x = 3, y = .25, label = "Normal", color = "blue", size=6)+
+      annotate("text", x = 3, y = .23, label = "t-dist", color = "red", size=6)
     
     # Return the ggplot to render
     return(myplot)
